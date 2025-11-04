@@ -1,0 +1,90 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Dependências Python (grandes demais para incluir)
+Backend/Dependencias/
+Frontend/Dependencias/
+
+# Ambientes virtuais
+venv/
+ENV/
+env/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Backups gerados pelo sistema
+backups/
+*.zip
+*.tar.gz
+*.7z
+
+# Logs
+logs/
+*.log
+
+# Configurações sensíveis
+.env
+.env.local
+.env.*
+*.key
+*.pem
+secrets.json
+
+# Executáveis gerados (opcional - descomente se não quiser incluir)
+# Frontend/dist/
+# *.exe
+
+# Arquivos temporários
+*.tmp
+temp/
+tmp/
+cache/
+
+# Sistema operacional
+Thumbs.db
+desktop.ini
+
+# Metadados de criptografia (contêm informações sensíveis)
+*.enc.meta
+
+# Arquivos de teste
+test_*.txt
+test_*.enc
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Arquivos de configuração local (opcional)
+config/local_*.json
+*.local.json
+

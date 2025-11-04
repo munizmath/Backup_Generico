@@ -1,0 +1,41 @@
+# Dependências para Sistema de Backup Avançado
+# Instalar com: pip install -r requirements.txt
+
+# Interface gráfica (já incluída no Python padrão)
+# tkinter - Interface gráfica nativa do Python
+
+# Processamento de arquivos e sistema
+psutil>=5.8.0   # Informações do sistema
+colorama>=0.4.4  # Cores no terminal (para scripts)
+tqdm>=4.62.0    # Barras de progresso (para scripts)
+
+# Para criar executáveis
+pyinstaller>=5.0.0  # Criar executáveis Python
+
+# Criptografia avançada
+cryptography>=41.0.0  # Criptografia com XChaCha20-Poly1305
+
+# Gráficos e visualização
+matplotlib>=3.7.0  # Gráficos de monitoramento
+pandas>=2.0.0      # Análise de dados
+numpy>=1.24.0      # Computação numérica
+
+# Logging estruturado
+structlog>=23.0.0  # Logs estruturados
+
+# Configuração
+pyyaml>=6.0        # Arquivos de configuração YAML
+
+# Validação de dados
+pydantic>=2.0.0    # Validação de dados
+
+# Cliente S3 para backup remoto
+boto3>=1.28.0      # AWS S3/MinIO
+
+# Notificações (smtplib é built-in do Python)
+# smtplib - Módulo built-in para notificações por email
+
+# Para funcionalidades futuras
+# requests>=2.26.0     # Requisições HTTP
+# schedule>=1.1.0      # Agendamento de tarefas
+# prometheus-client>=0.17.0  # Métricas Prometheus

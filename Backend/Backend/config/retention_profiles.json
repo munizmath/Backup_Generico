@@ -1,0 +1,147 @@
+{
+  "profiles": {
+    "dev-fast": {
+      "name": "Desenvolvimento Rápido",
+      "description": "Para desenvolvimento ativo com snapshots frequentes",
+      "retention": {
+        "minute": "48h",
+        "hour": "7d", 
+        "day": "4w",
+        "week": "3m",
+        "month": "6m"
+      },
+      "triggers": ["file_save", "git_commit", "manual"],
+      "ignore": [
+        "node_modules/",
+        ".next/",
+        "dist/",
+        ".venv/",
+        ".pytest_cache/",
+        "coverage/",
+        "*.lock",
+        "build/",
+        "target/",
+        ".git/",
+        "*.log",
+        ".env"
+      ],
+      "compression": "fast",
+      "encryption": false,
+      "remote_sync": false
+    },
+    "dev-secure": {
+      "name": "Desenvolvimento Seguro", 
+      "description": "Para desenvolvimento com backup remoto",
+      "retention": {
+        "minute": "48h",
+        "hour": "7d",
+        "day": "4w", 
+        "week": "3m",
+        "month": "12m"
+      },
+      "triggers": ["file_save", "git_commit", "manual", "scheduled"],
+      "ignore": [
+        "node_modules/",
+        ".next/",
+        "dist/",
+        ".venv/",
+        ".pytest_cache/",
+        "coverage/",
+        "*.lock",
+        "build/",
+        "target/",
+        ".git/",
+        "*.log",
+        ".env"
+      ],
+      "compression": "balanced",
+      "encryption": true,
+      "remote_sync": true,
+      "remote_config": {
+        "provider": "s3",
+        "bucket": "backup-dev-secure",
+        "region": "us-east-1"
+      }
+    },
+    "release": {
+      "name": "Produção/Release",
+      "description": "Para código em produção com retenção longa",
+      "retention": {
+        "day": "1y",
+        "week": "2y",
+        "month": "5y",
+        "year": "10y"
+      },
+      "triggers": ["git_tag", "manual", "scheduled"],
+      "ignore": [
+        "node_modules/",
+        ".next/",
+        "dist/",
+        ".venv/",
+        ".pytest_cache/",
+        "coverage/",
+        "*.lock",
+        "build/",
+        "target/",
+        ".git/",
+        "*.log",
+        ".env",
+        "temp/",
+        "tmp/"
+      ],
+      "compression": "maximum",
+      "encryption": true,
+      "remote_sync": true,
+      "worm": true,
+      "remote_config": {
+        "provider": "s3",
+        "bucket": "backup-release",
+        "region": "us-east-1",
+        "storage_class": "GLACIER"
+      }
+    },
+    "critical": {
+      "name": "Crítico",
+      "description": "Para dados críticos com máxima proteção",
+      "retention": {
+        "minute": "24h",
+        "hour": "7d",
+        "day": "1m",
+        "week": "6m",
+        "month": "2y",
+        "year": "10y"
+      },
+      "triggers": ["file_save", "git_commit", "manual", "scheduled"],
+      "ignore": [
+        "node_modules/",
+        ".next/",
+        "dist/",
+        ".venv/",
+        ".pytest_cache/",
+        "coverage/",
+        "*.lock",
+        "build/",
+        "target/"
+      ],
+      "compression": "maximum",
+      "encryption": true,
+      "remote_sync": true,
+      "replication": 3,
+      "remote_config": {
+        "provider": "s3",
+        "bucket": "backup-critical",
+        "region": "us-east-1",
+        "storage_class": "STANDARD",
+        "replication": true
+      }
+    }
+  },
+  "default_profile": "dev-fast",
+  "global_settings": {
+    "max_backup_size": "10GB",
+    "min_free_space": "1GB",
+    "cleanup_threshold": "80%",
+    "notification_email": "",
+    "log_level": "INFO"
+  }
+}

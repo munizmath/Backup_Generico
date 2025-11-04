@@ -1,0 +1,39 @@
+# Arquivos e diretórios a serem excluídos do backup
+# Adicione um item por linha
+
+# Dependências
+node_modules
+
+# Builds e distribuições
+build
+dist
+
+# Controle de versão
+.git
+.svn
+
+# Logs
+logs
+*.log
+
+# Configurações sensíveis
+.env
+.env.local
+.env.production
+
+# Cobertura de testes
+coverage
+.nyc_output
+
+# Arquivos temporários
+temp
+tmp
+cache
+
+# IDEs
+.vscode
+.idea
+
+# Sistema operacional
+Thumbs.db
+.DS_Store

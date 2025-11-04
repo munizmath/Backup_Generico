@@ -1,0 +1,24 @@
+# Configuração do Sistema de Backup Genérico
+# Edite este arquivo para personalizar as configurações
+
+# Diretório padrão para backups (usar variável de ambiente ou caminho relativo)
+BACKUP_DIR=./backups
+
+# Número de backups a manter
+MAX_BACKUPS=5
+
+# Exclusões padrão
+EXCLUDE_NODE_MODULES=true
+EXCLUDE_BUILD=true
+EXCLUDE_GIT=true
+EXCLUDE_LOGS=true
+EXCLUDE_ENV=true
+EXCLUDE_DIST=true
+EXCLUDE_COVERAGE=true
+
+# Configurações de compactação
+COMPRESSION_LEVEL=6
+
+# Configurações de verificação
+VERIFY_CHECKSUM=true
+VERIFY_INTEGRITY=true
