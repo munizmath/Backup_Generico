@@ -1,0 +1,409 @@
+{% extends "base.html" %}
+
+{% block title %}Início - Sistema de Backup Avançado{% endblock %}
+
+{% block page_title %}Início{% endblock %}
+
+{% block content %}
+<div class="page-content fade-in">
+    <div class="welcome-section">
+        <div class="card">
+            <h2 class="card-title">Bem-vindo ao Sistema de Backup Avançado</h2>
+            <p class="card-description">Gerencie seus backups de forma profissional e eficiente</p>
+        </div>
+    </div>
+    
+    <div class="actions-grid">
+        <div class="card action-card">
+            <div class="action-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h3 class="action-title">Criar Backup</h3>
+            <p class="action-description">Faça backup completo, incremental ou criptografado do seu projeto</p>
+            <button class="btn btn-primary" onclick="openBackupModal()">
+                Criar Backup
+            </button>
+        </div>
+        
+        <div class="card action-card">
+            <div class="action-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            </div>
+            <h3 class="action-title">Dashboard</h3>
+            <p class="action-description">Visualize estatísticas e métricas do sistema</p>
+            <a href="/dashboard" class="btn btn-primary">
+                Ver Dashboard
+            </a>
+        </div>
+        
+        <div class="card action-card">
+            <div class="action-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 3H21V21H3V3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9 9H15M9 12H15M9 15H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h3 class="action-title">Histórico</h3>
+            <p class="action-description">Visualize e gerencie seus backups anteriores</p>
+            <a href="/historico" class="btn btn-primary">
+                Ver Histórico
+            </a>
+        </div>
+        
+        <div class="card action-card">
+            <div class="action-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 1V3M12 21V23M4.22 4.22L5.64 5.64M18.36 18.36L19.78 19.78M1 12H3M21 12H23M4.22 19.78L5.64 18.36M18.36 5.64L19.78 4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h3 class="action-title">Configurações</h3>
+            <p class="action-description">Personalize o sistema conforme suas necessidades</p>
+            <a href="/configuracoes" class="btn btn-primary">
+                Abrir Configurações
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Criar Backup -->
+<div class="modal" id="backupModal" role="dialog" aria-labelledby="backupModalTitle" aria-hidden="true">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="backupModalTitle">Criar Novo Backup</h2>
+            <button class="modal-close" onclick="closeBackupModal()" aria-label="Fechar modal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+        <form class="modal-body" data-validate onsubmit="createBackup(event)">
+            <div class="form-group">
+                <label for="project_dir" class="form-label">Diretório do Projeto *</label>
+                <input 
+                    type="text" 
+                    id="project_dir" 
+                    name="project_dir" 
+                    class="form-input" 
+                    placeholder="C:\MeuProjeto"
+                    required
+                    data-label="Diretório do projeto"
+                    aria-describedby="project_dir_error"
+                >
+                <div class="form-error" id="project_dir_error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="backup_dir" class="form-label">Diretório de Backup *</label>
+                <input 
+                    type="text" 
+                    id="backup_dir" 
+                    name="backup_dir" 
+                    class="form-input" 
+                    placeholder="C:\Backups"
+                    required
+                    data-label="Diretório de backup"
+                    aria-describedby="backup_dir_error"
+                >
+                <div class="form-error" id="backup_dir_error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="project_name" class="form-label">Nome do Projeto *</label>
+                <input 
+                    type="text" 
+                    id="project_name" 
+                    name="project_name" 
+                    class="form-input" 
+                    placeholder="MeuProjeto"
+                    required
+                    minlength="3"
+                    data-label="Nome do projeto"
+                    aria-describedby="project_name_error"
+                >
+                <div class="form-error" id="project_name_error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="backup_type" class="form-label">Tipo de Backup *</label>
+                <select 
+                    id="backup_type" 
+                    name="backup_type" 
+                    class="form-select" 
+                    required
+                    aria-describedby="backup_type_error"
+                >
+                    <option value="">Selecione um tipo</option>
+                    <option value="completo">Completo</option>
+                    <option value="incremental">Incremental</option>
+                    <option value="git">Git</option>
+                    <option value="criptografado">Criptografado</option>
+                </select>
+                <div class="form-error" id="backup_type_error"></div>
+            </div>
+            
+            <div class="form-group" id="password_group" style="display: none;">
+                <label for="password" class="form-label">Senha (Mínimo 8 caracteres) *</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-input" 
+                    placeholder="Digite uma senha segura"
+                    minlength="8"
+                    data-label="Senha"
+                    aria-describedby="password_error"
+                >
+                <div class="form-error" id="password_error"></div>
+            </div>
+            
+            <div class="form-group" id="hours_group" style="display: none;">
+                <label for="hours" class="form-label">Horas (Incremental)</label>
+                <input 
+                    type="number" 
+                    id="hours" 
+                    name="hours" 
+                    class="form-input" 
+                    placeholder="24"
+                    min="1"
+                    max="168"
+                    value="24"
+                    aria-describedby="hours_error"
+                >
+                <div class="form-error" id="hours_error"></div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeBackupModal()">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    Criar Backup
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.welcome-section {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.card-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: var(--spacing-md);
+}
+
+.card-description {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.action-card {
+    text-align: center;
+    padding: var(--spacing-2xl);
+}
+
+.action-icon {
+    margin-bottom: var(--spacing-lg);
+    color: var(--accent-color);
+}
+
+.action-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: var(--spacing-md);
+}
+
+.action-description {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.modal.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+    animation: fadeIn var(--transition-base);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-xl);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    border-radius: 8px;
+    transition: background var(--transition-fast);
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.modal-close:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+
+.modal-body {
+    padding: var(--spacing-xl);
+}
+
+.modal-footer {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: flex-end;
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--glass-border);
+    margin-top: var(--spacing-lg);
+}
+</style>
+
+<script>
+function openBackupModal() {
+    const modal = document.getElementById('backupModal');
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    
+    // Focar no primeiro campo
+    const firstInput = modal.querySelector('input');
+    if (firstInput) {
+        setTimeout(() => firstInput.focus(), 100);
+    }
+}
+
+function closeBackupModal() {
+    const modal = document.getElementById('backupModal');
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+}
+
+// Fechar modal ao clicar fora
+document.getElementById('backupModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeBackupModal();
+    }
+});
+
+// Fechar modal com ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeBackupModal();
+    }
+});
+
+// Mostrar/ocultar campos baseado no tipo de backup
+document.getElementById('backup_type')?.addEventListener('change', function() {
+    const passwordGroup = document.getElementById('password_group');
+    const hoursGroup = document.getElementById('hours_group');
+    const passwordInput = document.getElementById('password');
+    
+    if (this.value === 'criptografado') {
+        passwordGroup.style.display = 'block';
+        passwordInput.setAttribute('required', 'required');
+        hoursGroup.style.display = 'none';
+    } else if (this.value === 'incremental') {
+        passwordGroup.style.display = 'none';
+        passwordInput.removeAttribute('required');
+        hoursGroup.style.display = 'block';
+    } else {
+        passwordGroup.style.display = 'none';
+        passwordInput.removeAttribute('required');
+        hoursGroup.style.display = 'none';
+    }
+});
+
+async function createBackup(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    
+    try {
+        const response = await window.backupSystem.apiRequest('/api/backup', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        
+        if (response.success) {
+            window.backupSystem.showNotification('Backup criado com sucesso!', 'success');
+            closeBackupModal();
+            form.reset();
+        } else {
+            window.backupSystem.showNotification(response.error || 'Erro ao criar backup', 'error');
+        }
+    } catch (error) {
+        window.backupSystem.showNotification('Erro ao criar backup. Tente novamente.', 'error');
+        console.error('Erro:', error);
+    }
+}
+</script>
+{% endblock %}
+

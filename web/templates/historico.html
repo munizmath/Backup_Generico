@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}Histórico - Sistema de Backup Avançado{% endblock %}
+
+{% block page_title %}Histórico de Backups{% endblock %}
+
+{% block content %}
+<div class="page-content fade-in">
+    <div class="history-header">
+        <div class="card">
+            <div class="search-bar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                    <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="form-input" 
+                    placeholder="Buscar backups..."
+                    aria-label="Buscar backups"
+                >
+            </div>
+        </div>
+    </div>
+    
+    <div class="history-content">
+        <div class="card">
+            <div class="table-container">
+                <table class="backups-table" role="table" aria-label="Lista de backups">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Tamanho</th>
+                            <th>Data</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="backupsTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.5);">
+                                Carregando backups...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.history-header {
+    margin-bottom: var(--spacing-xl);
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+}
+
+.search-bar svg {
+    color: rgba(255, 255, 255, 0.7);
+    flex-shrink: 0;
+}
+
+.search-bar .form-input {
+    flex: 1;
+    border: none;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.backups-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.backups-table thead {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.backups-table th {
+    padding: var(--spacing-md) var(--spacing-lg);
+    text-align: left;
+    font-weight: 600;
+    color: white;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.backups-table td {
+    padding: var(--spacing-md) var(--spacing-lg);
+    color: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.backups-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.action-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.action-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: 0.85rem;
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.action-btn:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+</style>
+
+<script>
+async function loadHistory() {
+    try {
+        const response = await window.backupSystem.apiRequest('/api/backups/list');
+        if (response.success) {
+            displayBackups(response.data);
+        }
+    } catch (error) {
+        console.error('Erro ao carregar histórico:', error);
+        document.getElementById('backupsTableBody').innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem; color: #ff6b6b;">
+                    Erro ao carregar backups
+                </td>
+            </tr>
+        `;
+    }
+}
+
+function displayBackups(backups) {
+    const tbody = document.getElementById('backupsTableBody');
+    
+    if (backups.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.5);">
+                    Nenhum backup encontrado
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tbody.innerHTML = backups.map(backup => `
+        <tr>
+            <td>${backup.name}</td>
+            <td><span class="badge badge-${backup.type || 'completo'}">${backup.type || 'Completo'}</span></td>
+            <td>${formatBytes(backup.size)}</td>
+            <td>${formatDate(backup.created)}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="restoreBackup('${backup.name}')" aria-label="Restaurar backup ${backup.name}">
+                        Restaurar
+                    </button>
+                    <button class="action-btn" onclick="deleteBackup('${backup.name}')" aria-label="Deletar backup ${backup.name}">
+                        Deletar
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function formatBytes(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function restoreBackup(name) {
+    if (confirm(`Deseja restaurar o backup "${name}"?`)) {
+        window.backupSystem.showNotification('Restauração iniciada...', 'info');
+        // Implementar restauração
+    }
+}
+
+function deleteBackup(name) {
+    if (confirm(`Tem certeza que deseja deletar o backup "${name}"?`)) {
+        window.backupSystem.showNotification('Deletando backup...', 'info');
+        // Implementar deleção
+    }
+}
+
+// Busca
+document.getElementById('searchInput')?.addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('#backupsTableBody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadHistory();
+});
+</script>
+{% endblock %}
+

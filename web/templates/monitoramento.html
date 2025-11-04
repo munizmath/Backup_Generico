@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Monitoramento - Sistema de Backup Avançado{% endblock %}
+
+{% block page_title %}Monitoramento{% endblock %}
+
+{% block content %}
+<div class="page-content fade-in">
+    <div class="monitoring-grid">
+        <div class="card monitoring-card">
+            <h3 class="card-title">Métricas em Tempo Real</h3>
+            <div class="metrics-real-time">
+                <div class="metric-box">
+                    <div class="metric-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-label">CPU</span>
+                        <span class="metric-value-large" id="cpuValue">0%</span>
+                    </div>
+                </div>
+                
+                <div class="metric-box">
+                    <div class="metric-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <path d="M3 9H21M9 3V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-label">Memória</span>
+                        <span class="metric-value-large" id="memoryValue">0%</span>
+                    </div>
+                </div>
+                
+                <div class="metric-box">
+                    <div class="metric-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 2C6.48 2 2 6.48 2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-label">Disco</span>
+                        <span class="metric-value-large" id="diskValue">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card alerts-card">
+            <h3 class="card-title">Alertas Ativos</h3>
+            <div class="alerts-list" id="alertsList">
+                <div class="no-alerts">Nenhum alerta ativo</div>
+            </div>
+        </div>
+        
+        <div class="card logs-card">
+            <h3 class="card-title">Logs Recentes</h3>
+            <div class="logs-container" id="logsContainer">
+                <div class="loading">Carregando logs...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.monitoring-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.monitoring-card {
+    padding: var(--spacing-xl);
+}
+
+.metrics-real-time {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.metric-box {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.metric-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+
+.metric-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+.metric-value-large {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: white;
+}
+
+.alerts-card,
+.logs-card {
+    padding: var(--spacing-xl);
+}
+
+.alerts-list,
+.logs-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.no-alerts {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    padding: var(--spacing-xl);
+}
+</style>
+
+<script>
+async function loadMonitoring() {
+    try {
+        const response = await window.backupSystem.apiRequest('/api/system/metrics');
+        if (response.success && response.data) {
+            updateMonitoringMetrics(response.data);
+        }
+    } catch (error) {
+        console.error('Erro ao carregar monitoramento:', error);
+    }
+}
+
+function updateMonitoringMetrics(data) {
+    if (data.system_health) {
+        const health = data.system_health;
+        document.getElementById('cpuValue').textContent = (health.cpu_percent || 0).toFixed(1) + '%';
+        document.getElementById('memoryValue').textContent = (health.memory_percent || 0).toFixed(1) + '%';
+        document.getElementById('diskValue').textContent = (health.disk_percent || 0).toFixed(1) + '%';
+    }
+}
+
+// Atualizar a cada 5 segundos
+document.addEventListener('DOMContentLoaded', function() {
+    loadMonitoring();
+    setInterval(loadMonitoring, 5000);
+});
+</script>
+{% endblock %}
+

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Ajuda - Sistema de Backup Avançado{% endblock %}
+
+{% block page_title %}Ajuda{% endblock %}
+
+{% block content %}
+<div class="page-content fade-in">
+    <div class="help-content">
+        <div class="card">
+            <h2 class="card-title">Perguntas Frequentes</h2>
+            
+            <div class="faq-list">
+                <div class="faq-item">
+                    <h3 class="faq-question">Como criar um backup?</h3>
+                    <p class="faq-answer">Acesse a página inicial e clique em "Criar Backup". Preencha os campos necessários e selecione o tipo de backup desejado.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3 class="faq-question">Quais são os tipos de backup disponíveis?</h3>
+                    <p class="faq-answer">Existem 4 tipos: Completo (todos os arquivos), Incremental (apenas modificados), Git (baseado em commits) e Criptografado (com segurança adicional).</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3 class="faq-question">Como restaurar um backup?</h3>
+                    <p class="faq-answer">Acesse o Histórico, localize o backup desejado e clique em "Restaurar".</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3 class="faq-question">Como alterar o tema?</h3>
+                    <p class="faq-answer">Clique no menu (três pontos) no canto inferior esquerdo e selecione "Tema Claro" ou "Tema Escuro".</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title">Documentação</h2>
+            <p>Para mais informações, consulte o README.md do projeto no GitHub.</p>
+            <a href="https://github.com/munizmath/Backup_Generico" target="_blank" class="btn btn-primary" rel="noopener noreferrer">
+                Ver no GitHub
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.help-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.faq-item {
+    padding: var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.faq-question {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: var(--spacing-md);
+}
+
+.faq-answer {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+}
+</style>
+{% endblock %}
+

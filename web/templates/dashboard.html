@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Sistema de Backup Avançado{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-content fade-in">
+    <div class="stats-grid">
+        <div class="card stat-card">
+            <div class="stat-icon stat-icon-primary">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-label">Backups Hoje</h3>
+                <p class="stat-value" id="backupsToday">0</p>
+            </div>
+        </div>
+        
+        <div class="card stat-card">
+            <div class="stat-icon stat-icon-success">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 11L12 14L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-label">Taxa de Sucesso</h3>
+                <p class="stat-value" id="successRate">0%</p>
+            </div>
+        </div>
+        
+        <div class="card stat-card">
+            <div class="stat-icon stat-icon-info">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 16V12M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-label">Espaço Total</h3>
+                <p class="stat-value" id="totalSpace">0 GB</p>
+            </div>
+        </div>
+        
+        <div class="card stat-card">
+            <div class="stat-icon stat-icon-warning">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-label">Alertas Ativos</h3>
+                <p class="stat-value" id="activeAlerts">0</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="charts-grid">
+        <div class="card chart-card">
+            <h3 class="card-title">Métricas do Sistema</h3>
+            <div class="metrics-container">
+                <div class="metric-item">
+                    <div class="metric-header">
+                        <span class="metric-label">CPU</span>
+                        <span class="metric-value" id="cpuPercent">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                        <div class="metric-bar-fill" id="cpuBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="metric-item">
+                    <div class="metric-header">
+                        <span class="metric-label">Memória</span>
+                        <span class="metric-value" id="memoryPercent">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                        <div class="metric-bar-fill" id="memoryBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="metric-item">
+                    <div class="metric-header">
+                        <span class="metric-label">Disco</span>
+                        <span class="metric-value" id="diskPercent">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                        <div class="metric-bar-fill" id="diskBar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card chart-card">
+            <h3 class="card-title">Backups Recentes</h3>
+            <div class="recent-backups" id="recentBackups">
+                <div class="loading">Carregando...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl);
+}
+
+.stat-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stat-icon-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.stat-icon-success {
+    background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+    color: white;
+}
+
+.stat-icon-info {
+    background: linear-gradient(135deg, #4dabf7 0%, #339af0 100%);
+    color: white;
+}
+
+.stat-icon-warning {
+    background: linear-gradient(135deg, #ffd43b 0%, #ffc107 100%);
+    color: white;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.chart-card {
+    padding: var(--spacing-xl);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: var(--spacing-lg);
+}
+
+.metrics-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.metric-label {
+    font-weight: 600;
+    color: white;
+    font-size: 0.95rem;
+}
+
+.metric-value {
+    font-weight: 700;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.metric-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.metric-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px;
+    transition: width var(--transition-base);
+}
+
+.recent-backups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+</style>
+
+<script>
+async function loadDashboard() {
+    try {
+        const response = await window.backupSystem.apiRequest('/api/system/metrics');
+        if (response.success && response.data) {
+            updateMetrics(response.data);
+        }
+        
+        const backupsResponse = await window.backupSystem.apiRequest('/api/backups/list');
+        if (backupsResponse.success) {
+            updateRecentBackups(backupsResponse.data);
+        }
+    } catch (error) {
+        console.error('Erro ao carregar dashboard:', error);
+    }
+}
+
+function updateMetrics(data) {
+    // Atualizar métricas do sistema
+    if (data.system_health) {
+        const health = data.system_health;
+        updateMetric('cpu', health.cpu_percent || 0);
+        updateMetric('memory', health.memory_percent || 0);
+        updateMetric('disk', health.disk_percent || 0);
+    }
+    
+    // Atualizar estatísticas
+    document.getElementById('backupsToday').textContent = data.backups || 0;
+    document.getElementById('successRate').textContent = 
+        ((data.success_rate || 0) * 100).toFixed(1) + '%';
+    document.getElementById('totalSpace').textContent = 
+        formatBytes(data.total_size || 0);
+    document.getElementById('activeAlerts').textContent = data.alerts || 0;
+}
+
+function updateMetric(name, value) {
+    const percentElement = document.getElementById(name + 'Percent');
+    const barElement = document.getElementById(name + 'Bar');
+    
+    if (percentElement) {
+        percentElement.textContent = value.toFixed(1) + '%';
+    }
+    if (barElement) {
+        barElement.style.width = value + '%';
+    }
+}
+
+function updateRecentBackups(backups) {
+    const container = document.getElementById('recentBackups');
+    if (!container) return;
+    
+    if (backups.length === 0) {
+        container.innerHTML = '<p style="color: rgba(255,255,255,0.7); text-align: center; padding: 2rem;">Nenhum backup encontrado</p>';
+        return;
+    }
+    
+    container.innerHTML = backups.slice(0, 5).map(backup => `
+        <div class="backup-item">
+            <div class="backup-info">
+                <h4>${backup.name}</h4>
+                <p>${formatDate(backup.created)}</p>
+            </div>
+            <div class="backup-size">${formatBytes(backup.size)}</div>
+        </div>
+    `).join('');
+}
+
+function formatBytes(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+// Carregar dashboard ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    loadDashboard();
+    // Atualizar a cada 30 segundos
+    setInterval(loadDashboard, 30000);
+});
+</script>
+{% endblock %}
+

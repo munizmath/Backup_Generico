@@ -1,0 +1,83 @@
+/* ============================================
+   Sistema de Temas (Claro/Escuro)
+   ============================================ */
+
+/* Tema Escuro (Padrão) */
+body.theme-dark {
+    --bg-primary: rgba(15, 15, 25, 0.8);
+    --bg-secondary: rgba(25, 25, 40, 0.6);
+    --text-primary: rgba(255, 255, 255, 0.95);
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --accent-color: #667eea;
+    --accent-hover: #764ba2;
+    --error-color: #ff6b6b;
+    --success-color: #51cf66;
+    --warning-color: #ffd43b;
+    --info-color: #4dabf7;
+}
+
+/* Tema Claro */
+body.theme-light {
+    --bg-primary: rgba(255, 255, 255, 0.9);
+    --bg-secondary: rgba(250, 250, 255, 0.8);
+    --text-primary: rgba(20, 20, 30, 0.95);
+    --text-secondary: rgba(20, 20, 30, 0.7);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.8);
+    --accent-color: #667eea;
+    --accent-hover: #764ba2;
+    --error-color: #ff6b6b;
+    --success-color: #51cf66;
+    --warning-color: #ffd43b;
+    --info-color: #4dabf7;
+}
+
+/* Ajustes para tema claro */
+body.theme-light::before {
+    opacity: 0.6;
+}
+
+body.theme-light .sidebar,
+body.theme-light .topbar,
+body.theme-light .card {
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+}
+
+body.theme-light .menu-item,
+body.theme-light .dropdown-item,
+body.theme-light .form-label,
+body.theme-light .topbar .page-title,
+body.theme-light .form-input,
+body.theme-light .form-select,
+body.theme-light .form-textarea {
+    color: var(--text-primary);
+}
+
+body.theme-light .menu-item:hover,
+body.theme-light .dropdown-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+}
+
+body.theme-light .form-input::placeholder,
+body.theme-light .form-textarea::placeholder {
+    color: var(--text-secondary);
+}
+
+/* Transição suave entre temas */
+body,
+.sidebar,
+.topbar,
+.card,
+.menu-item,
+.dropdown-item,
+.form-input,
+.form-select,
+.form-textarea {
+    transition: background-color var(--transition-base),
+                border-color var(--transition-base),
+                color var(--transition-base);
+}
+

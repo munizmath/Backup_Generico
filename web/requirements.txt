@@ -1,0 +1,12 @@
+# Dependências para Aplicação Web
+Flask>=3.0.0
+Flask-CORS>=4.0.0
+Werkzeug>=3.0.0
+
+# Dependências do sistema (já existentes)
+psutil>=5.8.0
+cryptography>=41.0.0
+structlog>=23.0.0
+pyyaml>=6.0
+pydantic>=2.0.0
+
